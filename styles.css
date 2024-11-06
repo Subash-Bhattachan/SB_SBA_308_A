@@ -7,8 +7,8 @@
 
 
 :root {
-    --primary-color: RGB(131,16,16);
-    --secondary-color: RGB(219,0,0);
+    --primary-color: rgb(131,16,16);
+    --secondary-color: rgb(219,0,0);
 }
 
 body {
@@ -20,7 +20,7 @@ body {
 }
 
 header {
-    padding: 1rem;
+    padding: 3rem;
     display: flex;
     justify-content: flex-end;
     background-color: var(--secondary-color)
@@ -56,7 +56,7 @@ main {
     width: 300px;
     margin: 1rem;
     border-radius: 3px;
-    box-shadow: 0.2px 4px 5px rgba(0,0,0,);
+    box-shadow: 0.5px 4px 5px rgba(0,0,0,);
     background-color: var(--secondary-color);
     position: relative;
     overflow: hidden;
@@ -87,16 +87,19 @@ main {
 }
 
 
-.movie-info span green {
-    color: lightgreen;
+.movie-info span.green {
+    color: yellow;
+    text-shadow: 0 0 7px #fff;
+                 0 0 10px #fff;
+                 0 0 21px #fff;
 }
 
-.movie-info span orange {
-    color: orange;
+.movie-info span.orange {
+    color: darkorange;
 }
 
-.movie-info span red {
-    color: red;
+.movie-info span.red {
+    color: darkred ;
 }
 
 .overview {
@@ -113,17 +116,4 @@ main {
 
 .movie:hover .overview {
     transform:translateY(0);
-}
-
-
-.green {
-    color: green;
-}
-
-.orange {
-    color: orange;
-}
-
-.red {
-    color: red;
 }
