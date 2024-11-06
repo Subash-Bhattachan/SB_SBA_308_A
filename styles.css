@@ -7,10 +7,8 @@
 
 
 :root {
-    --primary-color: #22254b;
-    --secondary-color: #373b69;
-
-
+    --primary-color: RGB(131,16,16);
+    --secondary-color: RGB(219,0,0);
 }
 
 body {
@@ -115,4 +113,17 @@ main {
 
 .movie:hover .overview {
     transform:translateY(0);
+}
+
+
+.green {
+    color: green;
+}
+
+.orange {
+    color: orange;
+}
+
+.red {
+    color: red;
 }
