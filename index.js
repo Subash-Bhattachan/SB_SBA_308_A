@@ -1,5 +1,5 @@
 // TMDB 
-
+//import axios from 'axios';
 const API_KEY = 'api_key=540a620756b8a19728af5bb33efe1072';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
@@ -11,14 +11,30 @@ const main = document.getElementById("main");
 const form = document.getElementById("form");
 const search = document.getElementById("search");
 
-function getMovies(url) {
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-        console.log(data.results);
-        showMovies(data.results);
-    });
+
+// writing the async function here to fetch movies
+async function getMovies(url) {
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        console.log(data.results); // to log the results to the console
+        showMovies(data.results); 
+
+    } catch (error) {
+        console.error("There is some error while fetching movies:", error);
+    }
+ 
+
 }
+
+// function getMovies(url) {
+//     fetch(url)
+//         .then(res => res.json())
+//         .then(data => {
+//         console.log(data.results);
+//         showMovies(data.results);
+//     });
+// }
 
 getMovies(API_URL)
 
