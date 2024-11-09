@@ -94,7 +94,7 @@ const tagsEl = document.getElementById("tags");
 
 // Using Axios to fetch data or return a Promise
 function getMovies(url) {
-    axios.get(url)
+    return axios.get(url)
         .then(response => {
             console.log(response.data.results); // it logs all the movie data
 
@@ -204,49 +204,50 @@ getMovies(API_URL)
     var allMovies = [];
 
     setGenre();
+    
     function setGenre() {
 
         tagsEl.innerHTML = "";
         genres.forEach(genre => {
-            const t = document.createElement("div");
-            t.classList.add("tag");
-            t.id = genre.id;
-            t.innerText = genre.name;
+            const obj = document.createElement("div");
+            obj.classList.add("tag");
+            obj.id = genre.id;
+            obj.innerText = genre.name;
 
-            t.addEventListener("click", () => {
-                if(selectedgenre.length == 0) {
-                    selectedgenre.push(genre.id);
-                }
-                else {
-                    if(selectedgenre.includes(genre.id)) {
-                        selectedgenre.forEach((id, index) => {
-                            if (id == genre.id) {
-                                selectedgenre.splice(index, 1)
-                            }
-                        })
-                    }
-                    else {
-                        selectedgenre.push(genre.id);
-                    }
-                }
-
-                console.log(selectedgenre);
+            obj.addEventListener("click", () => {
+              
+              if (selectedgenre.includes(genre.id)) {
+                  selectedgenre = selectedgenre.filter(id => id !== genre.id);  // this removes the genre if it is already selected
+              } else {
+                  selectedgenre.push(genre.id);  // adding genre to the array
+              }
+  
+              console.log("Selected Genres:", selectedgenre);
+  
 
                 allMovies = [];
 
                 getMovies(API_URL + "&with_genres=" + encodeURI(selectedgenre.join(",")))
+                  .then(movies => {
+                    allMovies = movies; // this populates the movies after fetching
+                    console.log("Fetched Movies:", allMovies);
+                    
                 
                 // this is sending all the movies of that selected genre to the server
-                if (allMovies.length > 0) {
+                //if (allMovies.length != 0) {
+                if (allMovies !=0 ) {
                   sendAllMovies(allMovies, 'POST');
+                  console.log ("all movies sent.")
                 }
+              })
+              
                
 
                 highlightSelection();
 
             })
 
-            tagsEl.append(t);
+            tagsEl.append(obj);
         })
     }
 
@@ -256,11 +257,10 @@ getMovies(API_URL)
 
 
 // this function is intending to send all the movies of the selected genres to the server
+// still having problems to add movies to the list directory I have taken from the movie api documentation
 function sendAllMovies(movies, method) {
 
-  const data = {
-    movies: movies // this is sending all the list of movies 
-  };
+  const data = { movies }; // this is sending all the list of movies 
 
   const options = {
     method: method,
@@ -268,7 +268,8 @@ function sendAllMovies(movies, method) {
       accept: 'application/json',
       'content-type': 'application/json',
       Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NDBhNjIwNzU2YjhhMTk3MjhhZjViYjMzZWZlMTA3MiIsIm5iZiI6MTczMTE2MzA0Mi4xNzI5MjUsInN1YiI6IjY3MmFkNWU4MjZiNjA1YmMxOWU1OTdkOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.COY0AuS5sHUa9kgcvcf4MQ1yVmQRIeuFqcmrR7PxRnk'
-    }
+    },
+    body: JSON.stringify(data)
   };
 
   
@@ -280,7 +281,8 @@ function sendAllMovies(movies, method) {
   .then(response => response.json())
   .then(data => {
     console.log('Movies of the selected genres are added successfully', data);
-    console.log(movies);
+    //console.log(allMovies); //
+    console.log("Movies sent:", movies);
   })
 
   .catch((error) => {
