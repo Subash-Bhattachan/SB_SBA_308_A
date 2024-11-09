@@ -198,7 +198,11 @@ getMovies(API_URL)
     })
 
 
+
+
     var selectedgenre = [];
+    var allMovies = [];
+
     setGenre();
     function setGenre() {
 
@@ -227,7 +231,17 @@ getMovies(API_URL)
                 }
 
                 console.log(selectedgenre);
+
+                allMovies = [];
+
                 getMovies(API_URL + "&with_genres=" + encodeURI(selectedgenre.join(",")))
+                
+                // this is sending all the movies of that selected genre to the server
+                if (allMovies.length > 0) {
+                  sendAllMovies(allMovies, 'POST');
+                }
+               
+
                 highlightSelection();
 
             })
@@ -235,6 +249,48 @@ getMovies(API_URL)
             tagsEl.append(t);
         })
     }
+
+    
+
+    
+
+
+// this function is intending to send all the movies of the selected genres to the server
+function sendAllMovies(movies, method) {
+
+  const data = {
+    movies: movies // this is sending all the list of movies 
+  };
+
+  const options = {
+    method: method,
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NDBhNjIwNzU2YjhhMTk3MjhhZjViYjMzZWZlMTA3MiIsIm5iZiI6MTczMTE2MzA0Mi4xNzI5MjUsInN1YiI6IjY3MmFkNWU4MjZiNjA1YmMxOWU1OTdkOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.COY0AuS5sHUa9kgcvcf4MQ1yVmQRIeuFqcmrR7PxRnk'
+    }
+  };
+
+  
+  
+  fetch(`https://api.themoviedb.org/3/list/{list_id}/add_item`, options)
+   
+
+
+  .then(response => response.json())
+  .then(data => {
+    console.log('Movies of the selected genres are added successfully', data);
+    console.log(movies);
+  })
+
+  .catch((error) => {
+    console.error('There is some error adding the movies:', error); 
+  })
+
+}
+
+
+
 
 
     // to know which one was selected earlier
