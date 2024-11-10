@@ -1,20 +1,14 @@
 
-
 import genres from './genres.js';
 
 const API_KEY = 'api_key=540a620756b8a19728af5bb33efe1072';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
-//const searchURL = BASE_URL + '/search/movie?' + API_KEY
 
 
 const main = document.getElementById("main");
-//const form = document.getElementById("form");
-//const search = document.getElementById("search");
 const tagsEl = document.getElementById("tags");
-
-
 
 
 // Using Axios to fetch data or return a Promise
@@ -30,7 +24,6 @@ function getMovies(url) {
                 main.innerHTML = `<h1 class = "no-results">No Results Available!</h1>`
             }
 
-            // showMovies(response.data.results); // this displays the movies
         })
         .catch(error => {
             console.error('Error fetching data:', error); // to handle any errors in case
@@ -38,19 +31,22 @@ function getMovies(url) {
 }
 
 
+// this function display movies in different containers
 function showMovies(movies) {
     main.innerHTML = "";
     
+    try {
+    // this loops through each movie and display
     for (const movie of movies) {
         const {title, poster_path, vote_average, overview} = movie;
-        const movieEl = document.createElement("div");
+        const movieEl = document.createElement("div"); // this creates a container for each movie
         movieEl.classList.add("movie");
         movieEl.innerHTML = `
             <img src="${poster_path? IMG_URL + poster_path: "https://via.placeholder.com/1080x1580"}" alt="${title}">
 
             <div class="movie-info">
                 <h3>${title}</h3>
-                <span class="${getColor(vote_average)}">${vote_average}</span>
+                <span class="${showColor(vote_average)}">${vote_average}</span>
             </div>
             <div class="overview">
 
@@ -58,16 +54,18 @@ function showMovies(movies) {
                ${overview}
             </div>`
 
-            main.appendChild(movieEl);
+            main.appendChild(movieEl); // appending movie to the main
         }
+    } catch (error) {
+        console.error("There is some error displaying movies:", error);
+        main.innerHTML = "<p>There is an error displaying movies. Try again.</p>"
     }
-    
-    
+}
+   
 
-
-    
-    function getColor(vote) {
-        vote = parseFloat(vote);
+    // this function shows the varying colors as per the votes
+    function showColor(vote) {
+        vote = parseFloat(vote); // converting to a float
         
         if (vote >= 8) {
             return 'green';
@@ -82,13 +80,10 @@ function showMovies(movies) {
     }
 
 
-
-
-
-
-
+    // this function clears the buttons that are clicked earlier to start anew
     function clearButtons() {
         let clearButtons = document.getElementById("clear");
+        
         if (clearButtons) {
             clearButtons.classList.add("highlight")
     
@@ -110,19 +105,15 @@ function showMovies(movies) {
     }
     }
 
-
-
-
-    
-
-     var selectedgenre = [];
-     var allMovies = [];
-
-    // setGenre();
+   
+    // this function shows the movies as per the genres that are selected by the user
+    var selectedgenre = [];
+     var allMovies = [];    
     
     function setGenre() {
 
         tagsEl.innerHTML = "";
+        
         genres.forEach(genre => {
             const obj = document.createElement("div");
             obj.classList.add("tag");
@@ -134,12 +125,10 @@ function showMovies(movies) {
               if (selectedgenre.includes(genre.id)) {
                   selectedgenre = selectedgenre.filter(id => id !== genre.id);  // this removes the genre if it is already selected
               } else {
-                  selectedgenre.push(genre.id);  // adding genre to the array
+                  selectedgenre.push(genre.id);  // adding selected genre to the array
               }
   
               console.log("Selected Genres:", selectedgenre);
-  
-
                 allMovies = [];
 
                 getMovies(API_URL + "&with_genres=" + encodeURI(selectedgenre.join(",")))
@@ -152,13 +141,10 @@ function showMovies(movies) {
                 //if (allMovies.length != 0) {
                 if (allMovies !=0 ) {
                   sendAllMovies(allMovies, 'POST');
-                  console.log ("all movies sent.")
-                  console.log(allMovies);
+                  console.log ("all movies sent.", allMovies);
+                  
                 }
               })
-              
-               
-
                 highlightSelection();
 
             })
@@ -169,9 +155,8 @@ function showMovies(movies) {
 
 
     
-
 // this function is intending to send all the movies of the selected genres to the server
-// still having problems to add movies to the list directory I have taken from the movie api documentation
+// still having problems while adding movies to the list directory I have taken from the movie api documentation, list id seems to be a problem here
 
 function sendAllMovies(movies, method) {
 
@@ -187,16 +172,14 @@ function sendAllMovies(movies, method) {
       body: JSON.stringify(data)
     };
   
-    const listId = 12345; 
+    const listId = 12345; // giving an id number, may be this is the not the correct way
     
     fetch(`https://api.themoviedb.org/3/list/{list_id}/add_item`, options)
      
-  
-  
     .then(response => response.json())
     .then(data => {
       console.log('Movies of the selected genres are added successfully', data);
-      //console.log(allMovies); //
+    
       console.log("Movies sent:", movies);
     })
   
@@ -208,8 +191,7 @@ function sendAllMovies(movies, method) {
   
 
 
-
-// to know which one was selected earlier
+// to know which tag was selected earlier
 function highlightSelection() {
     const tags = document.querySelectorAll(".tag");
     tags.forEach(tag => {
@@ -226,8 +208,5 @@ function highlightSelection() {
     
 }
   
-  
-  
 
-
-export { getMovies, showMovies, getColor, clearButtons, setGenre, sendAllMovies, highlightSelection }
+export { getMovies, showMovies, showColor, clearButtons, setGenre, sendAllMovies, highlightSelection }

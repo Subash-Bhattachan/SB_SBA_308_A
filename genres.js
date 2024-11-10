@@ -1,5 +1,5 @@
 
-
+// this is an array of genres of movies that the API carries
 const genres = [
     {
       "id": 28,
